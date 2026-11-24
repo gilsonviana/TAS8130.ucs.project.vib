@@ -2,7 +2,7 @@
 
 Aplicativo mobile para gestão de pet shops e estabelecimentos de banho e tosa, com foco no controle de clientes, animais, serviços e agendamentos. O aplicativo utilizará armazenamento local com SQLite para permitir o uso das funcionalidades principais mesmo sem conexão com a internet.
 
-> **Status da proposta:** documentação inicial do Projeto Integrador VI-B. A implementação poderá ajustar detalhes técnicos, desde que os requisitos e as regras de negócio documentados sejam mantidos ou atualizados.
+> **Status:** primeira versão implementada (cadastros, agenda, conclusão com registro financeiro e indicadores). Projeto Integrador VI-B.
 
 ## Objetivo
 
@@ -49,6 +49,43 @@ A sincronização com servidor poderá ser estudada em uma evolução futura. Na
 - [EAS Build](https://docs.expo.dev/build/introduction/)
 
 A lista detalhada está em [`docs/07-tecnologias.md`](docs/07-tecnologias.md).
+
+## Como executar
+
+```bash
+npm install          # instala as dependências
+npx expo start       # inicia o servidor de desenvolvimento
+```
+
+Abra o app **Expo Go** no celular (Android ou iOS) e leia o QR Code exibido no terminal. Todas as bibliotecas usadas (incluindo `expo-sqlite` e `@expo/ui`) já estão incluídas no Expo Go, então não é necessário gerar build nativo para testar.
+
+Na primeira execução o banco `petagenda.db` é criado no aparelho, com quatro serviços de exemplo (Banho, Tosa, Banho e tosa, Corte de unhas), que podem ser editados ou inativados.
+
+Verificações de código:
+
+```bash
+npx tsc --noEmit     # checagem de tipos
+npx expo lint        # lint
+```
+
+## Estrutura do código
+
+```
+src/
+├── app/                      # Telas (Expo Router)
+│   ├── _layout.tsx           # Provider do SQLite + navegação em pilha
+│   ├── (tabs)/               # Abas: Início, Agenda, Cadastros, Sobre
+│   ├── agendamento/          # Novo, detalhes ([id]) e edição ([id]/editar)
+│   ├── cliente/ animal/ servico/   # Formulários de cadastro (novo e [id])
+├── components/               # Componentes de interface e formulários
+├── db/                       # Banco local: esquema, regras de negócio e consultas
+│   ├── schema.ts             # Criação das tabelas, índices e migrações
+│   ├── agendamentos.ts       # RN02–RN09: validação, conflito, cancelamento, conclusão
+│   ├── indicadores.ts        # RF10/RN10: indicadores gerenciais
+│   └── clientes.ts, animais.ts, servicos.ts
+├── hooks/                    # Hooks (tema, consulta ao focar a tela)
+└── lib/formatos.ts           # Datas, horas e moeda
+```
 
 ## Documentação
 
